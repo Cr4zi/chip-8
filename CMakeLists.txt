@@ -1,10 +1,13 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.15)
 
 project(chip-8)
 
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+find_package(raylib 3.0 REQUIRED)
 
-file(GLOB SOURCES "src/*.cpp")
+set(CMAKE_C_STANDARD 11)
+
+file(GLOB SOURCES "src/*.c")
 
 add_executable(${PROJECT_NAME} ${SOURCES})
+
+target_link_libraries(${PROJECT_NAME} raylib)
