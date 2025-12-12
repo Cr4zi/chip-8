@@ -2,7 +2,7 @@
 A simple chip-8 emulator
 
 ## Run
-+ Follow [raylib](https://github.com/raysan5/raylib) build and installtion guide for you respective operating system.
++ Follow [raylib](https://github.com/raysan5/raylib) build and installation guide for you respective operating system.
 + Clone this repo
 
 ```
