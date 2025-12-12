@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <time.h>
 
 #define MEM_SIZE 4096
 #define GFX_COLS 64
@@ -13,8 +14,13 @@
 #define FPS 60
 #define STACK_SIZE 16
 #define FONT_ADDR 0x000
+#define NUM_OF_KEYS 16
 
-static uint8_t font[] = {
+#define INSTRUCTION_SIZE 2
+
+#define FONTS_SIZE 80
+
+static uint8_t font[FONTS_SIZE] = {
     0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
     0x20, 0x60, 0x20, 0x20, 0x70, // 1
     0xF0, 0x10, 0xF0, 0x80, 0xF0, // 2
@@ -41,6 +47,7 @@ extern uint8_t SP;
 extern uint16_t stack[STACK_SIZE];
 extern uint8_t DT;
 extern uint8_t ST;
+extern uint8_t keyboard[NUM_OF_KEYS];
 extern bool graphics[GFX_ROWS][GFX_COLS];
 
 void initialize_emu();

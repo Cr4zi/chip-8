@@ -5,6 +5,26 @@
 #include "chip8.h"
 
 #define RESCALE_FACTOR 20 
+#define CYCLES_PER_FRAME 10
+
+static uint8_t keymap[NUM_OF_KEYS] = {
+    KEY_X,
+    KEY_ONE,
+    KEY_TWO,
+    KEY_THREE,
+    KEY_Q,
+    KEY_W,
+    KEY_E,
+    KEY_A,
+    KEY_S,
+    KEY_D,
+    KEY_Z,
+    KEY_C,
+    KEY_FOUR,
+    KEY_R,
+    KEY_F,
+    KEY_V
+};
 
 int main(int argc, char *argv[]) {
     if(argc != 2) {
@@ -22,9 +42,16 @@ int main(int argc, char *argv[]) {
     SetTargetFPS(FPS);
     
     while(!WindowShouldClose()) {
-        execute();
+        for(int i = 0; i < NUM_OF_KEYS; i++) {
+            keyboard[i] = IsKeyDown(keymap[i]);
+        }
         
+        for(int i = 0; i < CYCLES_PER_FRAME; i++) {
+            execute();
+        }
+
         BeginDrawing();
+        // ClearBackground(BLACK);
         for(int i = 0; i < GFX_ROWS; i++) {
             for(int j = 0; j < GFX_COLS; j++) {
                 if(graphics[i][j] == 0)
@@ -36,6 +63,12 @@ int main(int argc, char *argv[]) {
             }
         }
         EndDrawing();
+
+        if(DT > 0)
+            DT--;
+
+        if(ST > 0)
+            ST--;
     }
 
     CloseWindow();
