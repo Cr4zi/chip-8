@@ -69,15 +69,15 @@ static void XY_operations(uint16_t instr) {
             V[x] += y;
             break;
         case 0x5: // SUB
-            V[0xF] = V[x] > y;
-            V[x] -= V[y];
+            V[0xF] = V[x] >= y;
+            V[x] -= y;
             break;
         case 0x6: // SHR
             V[0xF] = V[x] & 1;
             V[x] >>= 1;
             break;
         case 0x7:
-            V[0xF] = y > V[x];
+            V[0xF] = y >= V[x];
             V[x] = y - V[x];
             break;
         case 0xE: // SHL
@@ -132,12 +132,12 @@ static void handle_opcode_f(uint16_t instr) {
             PC += INSTRUCTION_SIZE;
             break;
         case 0x55:
-            for(int i = 0; i < x; i++)
+            for(int i = 0; i <= x; i++)
                 memory[I + i] = V[i];
             PC += INSTRUCTION_SIZE;
             break;
         case 0x65:
-            for(int i = 0; i < x; i++)
+            for(int i = 0; i <= x; i++)
                 V[i] = memory[I + i];
             PC += INSTRUCTION_SIZE;
             break;
@@ -155,7 +155,6 @@ void execute() {
     uint8_t x, y, n;
     uint16_t instr = (memory[PC] << 8) | (memory[PC + 1]);
     uint8_t opcode = (instr & 0xF000) >> 12;
-    printf("Instruction: %X\n", instr);
     switch(opcode) {
         case 0x0:
             if((instr & 0x0F00) == 0 && (instr & 0x00E0) == 0x00E0) {
@@ -239,19 +238,17 @@ void execute() {
             V[0xF] = 0;
             for(uint16_t i = 0; i < n; i++) {
                 uint8_t sprite_data = memory[I + i];
-
+                
                 for(uint8_t j = 0; j < 8; j++) {
-                    uint8_t pixel = (sprite_data >> (7 - j)) & 1;
-
-                    if(pixel) {
-                        uint8_t dx = (x + j) & 63;
-                        uint8_t dy = (y + i) & 31;
+                    if((sprite_data & (0x80 >> j)) != 0) {
+                        uint8_t dx = (x + j) % 64;
+                        uint8_t dy = (y + i) % 32;
 
                         if(graphics[dy][dx] == 1)
                             V[0xF] = 1;
-
                         graphics[dy][dx] ^= 1;
                     }
+
                 }
             }
             PC += INSTRUCTION_SIZE;
